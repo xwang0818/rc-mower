@@ -28,21 +28,8 @@ def serialWrite(port, values = [64, 192]):
 
 
 serialport = serial.Serial("/dev/ttyAMA0", 9600, timeout=0.5)
+#        
 speed = [64, 192]
-
-# for i in range(1, 63):
-#    speed[0] = speed[0] + 1
-#    speed[1] = speed[1] + 1
-#    serialWrite(serialport, speed)
-#    sleep(0.5)
-
-#speed = [127, 255]
-#for i in range(1, 63):
-#    speed[0] = speed[0] - 1
-#    speed[1] = speed[1] - 1
-#    serialWrite(serialport, speed)
-#    sleep(0.5)
-
 
 while key != ord('q'):
     key = screen.getch()
@@ -53,33 +40,37 @@ while key != ord('q'):
         pressed = True
         if key == curses.KEY_UP:
             #screen.addstr(0, 0, "Up")
-            if speed[0] < 94:
+            if speed[0] < 84:
                 speed[0] = speed[0] + 5
             if speed[1] < 212: 
                 speed[1] = speed[1] + 5
     
         elif key == curses.KEY_DOWN:
             #screen.addstr(0, 0, "Down")
-            if speed[0] > 35:
+            if speed[0] > 45:
                 speed[0] = speed[0] - 5
-            if speed[1] > 162:
+            if speed[1] > 172:
                 speed[1] = speed[1] - 5
     
         elif key == curses.KEY_LEFT:
             #screen.addstr(0, 0, "Left")
-            speed[0] = 64
-            if speed[1] < 212:
-                speed[1] = speed[1] + 5
+            if speed[0] < 84:
+                speed[0] = speed[0] + 5
+            if speed[1] > 172:
+                speed[1] = speed[1] - 5
  
         elif key == curses.KEY_RIGHT:
             #screen.addstr(0, 0, "Right")
-            if speed[0] < 94:
-                speed[0] = speed[0] + 5
-            speed[1] = 192
+            if speed[0] > 45:
+                speed[0] = speed[0] - 5
+            if speed[1] < 212:
+                speed[1] = speed[1] + 5
 
-    #serialWrite(serialport, [64, 192])
+
+    serialWrite(serialport, speed)
     screen.addstr(0, 0, '{} {}'.format(speed[0], speed[1]))
     if not pressed:
+        sleep(0.5)
         if speed[0] - 64 > 0:
             speed[0] = speed[0] - 10
             if speed[0] < 64:
@@ -98,7 +89,6 @@ while key != ord('q'):
             if speed[1] > 192:
                 speed[1] = 192
 
-    sleep(0.1)
 
 serialport.close()
 curses.endwin()
